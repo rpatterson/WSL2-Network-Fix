@@ -3,15 +3,14 @@ redirects needed.  No *special* software.  As it should have been from the start
 if MS decided not to overwrite your config every single reboot.
 
 ### Windows
-_Scripts assume they're installed to C:\Startup.  Adjust to local machine accordingly._
+_Scripts assume they're installed to C:\ProgramData\WSL2-Network-Fix.  Adjust to local
+machine accordingly._
 
-Clone this code repository somewhere and make it appear as `C:\Startup` in Windows and
-have linux `$HOME/WSL2-Network-Fix` point to the same place:
+Clone this code repository somewhere and make it appear as
+`C:\ProgramData\WSL2-Network-Fix` in Windows:
 
+	cd C:\ProgramData
     git clone https://github.com/pawelgnatowski/WSL2-Network-Fix.git
-    pushd WSL2-Network-Fix
-    mklink /d C:\Startup %cd%
-    wsl -u root bash -c "ln -s ~/mnt/c/Startup"
 
 ### Linux
 wsl.conf => disable resolv.conf recreation

@@ -1,7 +1,7 @@
 # to execute you need to set this up:
 # Set-ExecutionPolicy RemoteSigned
 # let's check how boot process is going to be
-$global:logPath = "C:\Startup\wsl2_boot.log"
+$global:logPath = "C:\ProgramData\WSL2-Network-Fix\wsl2_boot.log"
 
 # TODO: configureWSL2Net set global variable with path to shell script to configure WSL network interface inside Linux
 # this function is used to configure network settings after VMSwitch is ready to be used by wsl instance
@@ -30,7 +30,7 @@ function ConfigureWSLNetwork {
     
     # wsl --distribution Ubuntu-20.04 -u root /home/p/configureWSL2Net.sh
     # configureWSL2Net.sh needs to be made executable
-    Start-Process -FilePath "wsl.exe" -ArgumentList "-u root /mnt/c/Startup/configureWSL2Net.sh"
+    Start-Process -FilePath "wsl.exe" -ArgumentList "-u root /mnt/c/ProgramData/WSL2-Network-Fix/configureWSL2Net.sh"
     Write-Output "network configuration completed" >> $logPath
     
     Write-Output $wslStatus 5>> $logPath
