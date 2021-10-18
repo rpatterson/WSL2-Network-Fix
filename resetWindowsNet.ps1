@@ -26,9 +26,7 @@ function ConfigureWSLNetwork {
     Until ( $wslStarted )
 
     $wslStatus
-    
-    # wsl --distribution Ubuntu-20.04 -u root /home/p/configureWSL2Net.sh
-    # configureWSL2Net.sh needs to be made executable
+
     Start-Process -FilePath "wsl.exe" -ArgumentList "-u root /mnt/c/ProgramData/WSL2-Network-Fix/configureWSL2Net.sh"
     Write-Output "network configuration completed"
     
