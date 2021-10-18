@@ -36,7 +36,7 @@ configuring networking and then configure it as appropriate for your LAN.  For e
 in Debian based distributions, such as Ubuntu, the package is `ifupdown`:
 
 	# apt update
-	# apt install -y "ifupdown"
+	# apt install -y "ifupdown" "resolvconf"
 
 Then edit `/etc/network/interfaces` to configure the network.  For example:
 
@@ -54,8 +54,14 @@ You may also need to modify the command to bring up the network in the
 
 #### DNS Nameserver Resolution
 
-wsl.conf => disable resolv.conf recreation
+Disable DNS nameserver resolution configured by WSL2 in `%USERPROFILE%\.wslconfig`:
 
-resolv.conf => set flag to +i so windows will not overwrite the file despite the docs
-saying wsl.conf is enough.  It is not.  MS plainly ignores wsl.conf file and its own
-docs.
+    ...
+    [network]
+	...
+    generateResolvConf = false
+    ...
+
+This option is broken in WSL2 at the time of this writing so this option doesn't have
+any effect and there's a workaround in `./configureWSL2Net.sh`, but better to set it if
+it's ever fixed in WSL2.
