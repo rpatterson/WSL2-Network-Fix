@@ -2,41 +2,6 @@
 # Set-ExecutionPolicy RemoteSigned
 # let's check how boot process is going to be
 
-# TODO: configureWSL2Net set global variable with path to shell script to configure WSL network interface inside Linux
-# this function is used to configure network settings after VMSwitch is ready to be used by wsl instance
-function ConfigureWSLNetwork {
-
-     
-    Write-Output "Starting WSL..."
-    
-    $wslStatus = Get-Process -Name "wsl" -ErrorAction Inquire
-    if (!($wslStatus)) {
-        Start-Job -ScriptBlock { Start-Process -FilePath "wsl.exe" -WindowStyle hidden }
-    }   
-    
-    Do {
-
-        $wslStatus = Get-Process -Name "wsl" -ErrorAction Inquire
-    
-        If (!($wslStatus)) { Write-Output 'Waiting for WSL2 process to start' ; Start-Sleep 1 }
-        
-        Else { Write-Output 'WSL Process has started, configuring network' ; $wslStarted = $true }
-    
-    }
-    Until ( $wslStarted )
-
-    $wslStatus
-
-    Start-Process -FilePath "wsl.exe" -ArgumentList "-u root /mnt/c/ProgramData/WSL2-Network-Fix/configureWSL2Net.sh"
-    Write-Output "network configuration completed"
-    
-    Write-Output $wslStatus
-    
-    return 0
-    
-    
-}
-
 function ConfigureSwitch {
 
     
@@ -96,13 +61,6 @@ Do {
         ConfigureSwitch -Adapter $active[0] ;
 
         $started = $true ;
-        # Hook all Hyper V VMs to WSL network => avoid network performance issues.
-        Write-Output  "Getting all Hyper V machines to use WSL Switch" ;
-        Get-VM | Get-VMNetworkAdapter | Connect-VMNetworkAdapter -SwitchName "WSL" ; 
-        # now that host network is configured we can set up wsl network
-        ConfigureWSLNetwork ;
-        # Start All Hyper VMs
-        Get-VM | Start-VM ;
     }
 
 }
