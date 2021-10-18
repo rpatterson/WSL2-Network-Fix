@@ -28,6 +28,32 @@ Keep in mind, if you do wsl --shutdown manually, you need to run sh script again
 
 
 ### Linux
+
+#### Network Interface
+
+Inside a root shell in the WSL2 distribution, install the appropriate package for
+configuring networking and then configure it as appropriate for your LAN.  For example,
+in Debian based distributions, such as Ubuntu, the package is `ifupdown`:
+
+	# apt update
+	# apt install -y "ifupdown"
+
+Then edit `/etc/network/interfaces` to configure the network.  For example:
+
+    auto eth0
+    iface eth0 inet static
+      address 192.168.1.10/24
+      gateway 192.168.1.1
+      dns-nameserver 192.168.1.1
+      dns-nameserver 8.8.8.8
+      dns-nameserver 8.8.4.4
+      dns-search example.com
+
+You may also need to modify the command to bring up the network in the
+`./configureWSL2Net.sh` script when using other distributions.
+
+#### DNS Nameserver Resolution
+
 wsl.conf => disable resolv.conf recreation
 
 resolv.conf => set flag to +i so windows will not overwrite the file despite the docs
