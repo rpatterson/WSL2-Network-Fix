@@ -68,8 +68,6 @@ function ConfigureSwitch {
 #  force launch without going to bash prompt
 wsl exit
 
-wsl -l -v
-
 $started = $false
 $err = @()
 
