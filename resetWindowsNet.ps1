@@ -1,14 +1,13 @@
 # to execute you need to set this up:
 # Set-ExecutionPolicy RemoteSigned
 # let's check how boot process is going to be
-$global:logPath = "C:\ProgramData\WSL2-Network-Fix\wsl2_boot.log"
 
 # TODO: configureWSL2Net set global variable with path to shell script to configure WSL network interface inside Linux
 # this function is used to configure network settings after VMSwitch is ready to be used by wsl instance
 function ConfigureWSLNetwork {
 
      
-    Write-Output "Starting WSL..." >> $logPath
+    Write-Output "Starting WSL..."
     
     $wslStatus = Get-Process -Name "wsl" -ErrorAction Inquire
     if (!($wslStatus)) {
@@ -19,21 +18,21 @@ function ConfigureWSLNetwork {
 
         $wslStatus = Get-Process -Name "wsl" -ErrorAction Inquire
     
-        If (!($wslStatus)) { Write-Output 'Waiting for WSL2 process to start' >> $logPath ; Start-Sleep 1 }
+        If (!($wslStatus)) { Write-Output 'Waiting for WSL2 process to start' ; Start-Sleep 1 }
         
-        Else { Write-Output 'WSL Process has started, configuring network' >> $logPath ; $wslStarted = $true }
+        Else { Write-Output 'WSL Process has started, configuring network' ; $wslStarted = $true }
     
     }
     Until ( $wslStarted )
 
-    $wslStatus 5>> $logPath
+    $wslStatus
     
     # wsl --distribution Ubuntu-20.04 -u root /home/p/configureWSL2Net.sh
     # configureWSL2Net.sh needs to be made executable
     Start-Process -FilePath "wsl.exe" -ArgumentList "-u root /mnt/c/ProgramData/WSL2-Network-Fix/configureWSL2Net.sh"
-    Write-Output "network configuration completed" >> $logPath
+    Write-Output "network configuration completed"
     
-    Write-Output $wslStatus 5>> $logPath
+    Write-Output $wslStatus
     
     return 0
     
@@ -52,7 +51,7 @@ function ConfigureSwitch {
     #>
     param ($adapter)
     
-    Write-Output "Configuring the Virtual Machine network switch..." >> $logPath
+    Write-Output "Configuring the Virtual Machine network switch..."
     
     $job = Start-Job -ScriptBlock {
         Set-VMSwitch WSL -NetAdapterName $adapter.Name
@@ -69,16 +68,16 @@ function ConfigureSwitch {
 #  force launch without going to bash prompt
 wsl exit
 
-wsl -l -v *>> $logPath
+wsl -l -v
 
 $started = $false
 $err = @()
 
 Do {
     $status = Get-VMSwitch WSL -ErrorAction SilentlyContinue -ErrorVariable +err
-    Write-Output "Get-VMSwitch status: $status" >> $logPath
-    If ($err[0] -match "do not have the required permission") { Write-Output $err >> $logPath; throw $err }
-    If ($err.count -eq 10) {Write-Output '*** Error No WSL VM switch after 10 attempts' >> $logPath; throw $err}
+    Write-Output "Get-VMSwitch status: $status"
+    If ($err[0] -match "do not have the required permission") { Write-Output $err; throw $err }
+    If ($err.count -eq 10) {Write-Output '*** Error No WSL VM switch after 10 attempts'; throw $err}
 
     If (!($status)) { Write-Output 'Waiting for WSL swtich to get registered ', $err.count ; Start-Sleep 1 }
     Else {
@@ -102,7 +101,7 @@ Do {
 
         $started = $true ;
         # Hook all Hyper V VMs to WSL network => avoid network performance issues.
-        Write-Output  "Getting all Hyper V machines to use WSL Switch" >> $logPath ; 
+        Write-Output  "Getting all Hyper V machines to use WSL Switch" ;
         Get-VM | Get-VMNetworkAdapter | Connect-VMNetworkAdapter -SwitchName "WSL" ; 
         # now that host network is configured we can set up wsl network
         ConfigureWSLNetwork ;
