@@ -25,11 +25,9 @@ being created at boot.  Running this before login will cause wsl$ mapping to be 
 and will also prevent you from running "code ." inside linux folders.  VS Code will
 still work though, just you will ahve to open it form within remote connection though.
 
-Assumption is you run docker, hyper V, windows 11 latest version (earleir may or may not
-work) Docker used here CE native Linux version, not Docker Desktop.  Desktop might need
-another approach.  Possibly even simpler as in CE it does not start WSL nor Docker
-automatically.  Windows network is set to DHCP - you can bind mac for static address or
-write powershell to give it fixed address.
+Assumption is you run hyper V, windows 11 latest version (earleir may or may not work).
+Windows network is set to DHCP - you can bind mac for static address or write powershell
+to give it fixed address.
 
 Keep in mind, if you do wsl --shutdown manually, you need to run sh script again.
 
